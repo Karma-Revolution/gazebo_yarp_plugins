@@ -87,6 +87,16 @@ bool GazeboYarpControlBoardDriver::gazebo_init()
                                  boost::bind ( &GazeboYarpControlBoardDriver::onUpdate, this, _1 ) );
     
     gazebo_node_ptr = gazebo::transport::NodePtr ( new gazebo::transport::Node );
+    gazebo::physics::WorldPtr temp_world=this->_robot->GetWorld();
+    if (!temp_world){
+        std::cout<<"ControlBoardDriver: world pointer is not initialized"<<std::endl;
+        return false;
+    }
+    std::string temp_world_name=temp_world->GetName();
+    //if (temp_world_name==""){
+        std::cout<<"ControlBoardDriver: world name is: "<<temp_world_name<<std::endl;
+     //   return false;
+    //}
     gazebo_node_ptr->Init ( this->_robot->GetWorld()->GetName() );
     jointCmdPub = gazebo_node_ptr->Advertise<gazebo::msgs::JointCmd>
                   ( std::string ( "~/" ) + this->_robot->GetName() + "/joint_cmd" );
